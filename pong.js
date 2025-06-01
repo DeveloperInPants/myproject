@@ -5,13 +5,14 @@ export class Pong {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.keys = new Set(); // Для отслеживания нажатых клавиш
+        this.keys = new Set();
         this.score = { player1: 0, player2: 0 };
         this.running = true;
         this.gameMode = null;
         this.gameStarted = false;
-        this.winningScore = 10;
+        this.winningScore = 5;
         this.winner = null;
+        this.firstRound = true;
         
         // Размеры объектов
         this.paddleWidth = 15;
@@ -38,30 +39,28 @@ export class Pong {
     
     createExitButton() {
         this.exitBtn = document.createElement('button');
-        this.exitBtn.innerHTML = '✖';
+        this.exitBtn.textContent = 'Выход';
         this.exitBtn.style.cssText = `
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 20px;
+            right: 20px;
             z-index: 200;
-            width: 40px;
-            height: 40px;
-            background: #ff0000;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 20px;
+            padding: 8px 16px;
+            background: rgba(15, 15, 26, 0.7);
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            font-family: 'Courier New', monospace;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+            border-radius: 4px;
             transition: all 0.3s;
         `;
         this.exitBtn.addEventListener('mouseover', () => {
-            this.exitBtn.style.transform = 'scale(1.1)';
-            this.exitBtn.style.background = '#ff4444';
+            this.exitBtn.style.background = '#00ff00';
+            this.exitBtn.style.color = '#0f0f1a';
         });
         this.exitBtn.addEventListener('mouseout', () => {
-            this.exitBtn.style.transform = 'scale(1)';
-            this.exitBtn.style.background = '#ff0000';
+            this.exitBtn.style.background = 'rgba(15, 15, 26, 0.7)';
+            this.exitBtn.style.color = '#00ff00';
         });
         this.exitBtn.addEventListener('click', () => {
             this.stop();
@@ -129,6 +128,7 @@ export class Pong {
                 this.modeContainer.remove();
                 this.createScoreDisplay();
                 this.gameStarted = false;
+                this.firstRound = true;
             });
             this.modeContainer.appendChild(btn);
         });
@@ -168,9 +168,10 @@ export class Pong {
             e.preventDefault();
             this.keys.add(e.key);
 
-            // Старт игры при первом нажатии
-            if (!this.gameStarted && this.gameMode) {
+            // Старт игры при первом нажатии только в первом раунде
+            if (this.firstRound && !this.gameStarted && this.gameMode) {
                 this.gameStarted = true;
+                this.firstRound = false;
                 this.startBallMovement();
             }
         }
@@ -194,9 +195,17 @@ export class Pong {
         this.player2Y = this.canvas.height / 2 - this.paddleHeight / 2;
         this.ballX = this.canvas.width / 2;
         this.ballY = this.canvas.height / 2;
-        this.ballSpeedX = 0;
-        this.ballSpeedY = 0;
-        this.gameStarted = false;
+        
+        // Мяч начинает движение автоматически после первого раунда
+        if (this.firstRound) {
+            this.ballSpeedX = 0;
+            this.ballSpeedY = 0;
+            this.gameStarted = false;
+        } else {
+            this.ballSpeedX = 5 * (Math.random() > 0.5 ? 1 : -1);
+            this.ballSpeedY = 3 * (Math.random() > 0.5 ? 1 : -1);
+            this.gameStarted = true;
+        }
     }
     
     startBallMovement() {
@@ -312,8 +321,8 @@ export class Pong {
         this.ctx.stroke();
         this.ctx.setLineDash([]);
         
-        // Сообщение "Нажмите клавишу"
-        if (!this.gameStarted && this.gameMode && !this.winner) {
+        // Сообщение "Нажмите клавишу" только в первом раунде
+        if (this.firstRound && !this.gameStarted && this.gameMode && !this.winner) {
             this.ctx.font = '20px "Press Start 2P"';
             this.ctx.textAlign = 'center';
             this.ctx.fillStyle = '#ffff00';
