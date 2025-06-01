@@ -80,8 +80,10 @@ export class Pong {
     updateModeButtons() {
         const modes = ['pvp', 'pve'];
         modes.forEach(mode => {
-            this[`${mode}Btn`].style.background = this.gameMode === mode ? '#00ff00' : '#333';
-            this[`${mode}Btn`].style.color = this.gameMode === mode ? '#0f0f1a' : '#00ff00';
+            if (this[`${mode}Btn`]) {
+                this[`${mode}Btn`].style.background = this.gameMode === mode ? '#00ff00' : '#333';
+                this[`${mode}Btn`].style.color = this.gameMode === mode ? '#0f0f1a' : '#00ff00';
+            }
         });
     }
     
@@ -122,7 +124,7 @@ export class Pong {
         } else {
             // Улучшенный AI с предсказанием
             const paddleCenter = this.player2Y + this.paddleHeight / 2;
-            const predictY = this.ballY + (this.ballSpeedY * (this.canvas.width - this.ballX) / Math.abs(this.ballSpeedX)
+            const predictY = this.ballY + (this.ballSpeedY * (this.canvas.width - this.ballX) / Math.abs(this.ballSpeedX));
             const targetY = Math.max(
                 this.paddleHeight / 2,
                 Math.min(this.canvas.height - this.paddleHeight / 2, predictY)
@@ -233,9 +235,9 @@ export class Pong {
         document.removeEventListener('keydown', this.handleKeyDown);
         document.removeEventListener('keyup', this.handleKeyUp);
         
-        const buttons = document.querySelectorAll('#game-modal div > button');
-        if (buttons.length > 0) {
-            buttons.forEach(btn => btn.remove());
+        const buttonsContainer = document.querySelector('#game-modal div');
+        if (buttonsContainer) {
+            buttonsContainer.remove();
         }
     }
 }
