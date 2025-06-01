@@ -1,35 +1,32 @@
 import { Pong } from './pong.js';
-import { SpaceInvaders } from './space-invaders.js';
-// ... другие импорты ...
 
-const games = {
-    pong: Pong,
-    'space-invaders': SpaceInvaders
-    // ... другие игры
-};
+const modal = document.getElementById('game-modal');
+const canvas = document.getElementById('game-canvas');
+const gameTitle = document.getElementById('game-title');
+const gameControls = document.getElementById('game-controls');
+let currentGame = null;
 
-document.querySelectorAll('.game-card').forEach(card => {
-    card.querySelector('button').addEventListener('click', () => {
-        const gameId = card.dataset.game;
-        launchGame(games[gameId]);
-    });
+document.querySelector('[data-game="pong"] button').addEventListener('click', () => {
+    startGame(Pong);
 });
 
-function launchGame(GameClass) {
-    const modal = document.getElementById('game-modal');
-    const canvas = document.getElementById('game-canvas');
-    
+function startGame(GameClass) {
     // Настройка интерфейса
-    document.getElementById('game-title').textContent = GameClass.title;
-    document.getElementById('game-controls').textContent = GameClass.controls;
+    gameTitle.textContent = GameClass.title;
+    gameControls.textContent = GameClass.controls;
+    canvas.width = 800;
+    canvas.height = 500;
     
-    // Запуск игры
-    new GameClass(canvas);
+    // Остановка предыдущей игры
+    if (currentGame) currentGame.stop();
+    
+    // Запуск новой
+    currentGame = new GameClass(canvas);
     modal.style.display = 'block';
-    
-    // Закрытие окна
-    document.querySelector('.close-btn').onclick = () => {
-        modal.style.display = 'none';
-        canvas.width = 0; // Остановка игры
-    };
 }
+
+// Закрытие игры
+document.querySelector('.close-btn').addEventListener('click', () => {
+    modal.style.display = 'none';
+    if (currentGame) currentGame.stop();
+});

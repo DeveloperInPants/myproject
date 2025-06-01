@@ -39,3 +39,19 @@ body {
     background: var(--dark-blue);
     border: 3px solid var(--neon-pink);
 }
+/* Стили для Pong */
+#game-canvas.pong {
+    width: 800px;
+    height: 500px;
+    background: #000;
+    border: 3px solid #00ff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.pong-score {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2rem;
+    color: #00ff00;
+    text-align: center;
+    margin-top: 20px;
+}
