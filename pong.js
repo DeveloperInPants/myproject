@@ -5,12 +5,12 @@ export class Pong {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.keys = {};
+        this.keys = new Set(); // Для отслеживания нажатых клавиш
         this.score = { player1: 0, player2: 0 };
         this.running = true;
-        this.gameMode = null; // Начинаем с null (режим не выбран)
+        this.gameMode = null;
         this.gameStarted = false;
-        this.winningScore = 5; // Очки для победы
+        this.winningScore = 10;
         this.winner = null;
         
         // Размеры объектов
@@ -128,7 +128,7 @@ export class Pong {
                 this.gameMode = mode.id;
                 this.modeContainer.remove();
                 this.createScoreDisplay();
-                this.gameStarted = false; // Игра на паузе до первого нажатия
+                this.gameStarted = false;
             });
             this.modeContainer.appendChild(btn);
         });
@@ -163,23 +163,29 @@ export class Pong {
     }
     
     handleKeyDown(e) {
-        if (['w', 's', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+        const validKeys = ['w', 's', 'ArrowUp', 'ArrowDown'];
+        if (validKeys.includes(e.key)) {
             e.preventDefault();
-            
+            this.keys.add(e.key);
+
             // Старт игры при первом нажатии
             if (!this.gameStarted && this.gameMode) {
                 this.gameStarted = true;
+                this.startBallMovement();
             }
-            
-            if (!this.keys[e.key]) {
-                this.keys[e.key] = true;
-            }
+        }
+
+        // Выход по ESC при победе
+        if (e.key === 'Escape' && this.winner) {
+            this.stop();
+            document.getElementById('game-modal').style.display = 'none';
         }
     }
     
     handleKeyUp(e) {
-        if (['w', 's', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-            this.keys[e.key] = false;
+        const validKeys = ['w', 's', 'ArrowUp', 'ArrowDown'];
+        if (validKeys.includes(e.key)) {
+            this.keys.delete(e.key);
         }
     }
     
@@ -188,9 +194,9 @@ export class Pong {
         this.player2Y = this.canvas.height / 2 - this.paddleHeight / 2;
         this.ballX = this.canvas.width / 2;
         this.ballY = this.canvas.height / 2;
-        this.ballSpeedX = 0; // Мяч не двигается
+        this.ballSpeedX = 0;
         this.ballSpeedY = 0;
-        this.gameStarted = false; // Ожидаем нажатия клавиш
+        this.gameStarted = false;
     }
     
     startBallMovement() {
@@ -199,19 +205,19 @@ export class Pong {
     }
     
     update(deltaTime) {
-        if (!this.gameMode || !this.gameStarted || this.winner) return;
+        if (!this.gameMode || this.winner) return;
         
         // Движение платформы игрока 1 (W/S)
         const moveSpeed = 0.4 * deltaTime;
-        if (this.keys['w'] && this.player1Y > 0) this.player1Y -= moveSpeed;
-        if (this.keys['s'] && this.player1Y < this.canvas.height - this.paddleHeight) this.player1Y += moveSpeed;
+        if (this.keys.has('w') && this.player1Y > 0) this.player1Y -= moveSpeed;
+        if (this.keys.has('s') && this.player1Y < this.canvas.height - this.paddleHeight) this.player1Y += moveSpeed;
         
         // Движение платформы игрока 2 (↑/↓) или AI
         if (this.gameMode === 'pvp') {
-            if (this.keys['ArrowUp'] && this.player2Y > 0) this.player2Y -= moveSpeed;
-            if (this.keys['ArrowDown'] && this.player2Y < this.canvas.height - this.paddleHeight) this.player2Y += moveSpeed;
+            if (this.keys.has('ArrowUp') && this.player2Y > 0) this.player2Y -= moveSpeed;
+            if (this.keys.has('ArrowDown') && this.player2Y < this.canvas.height - this.paddleHeight) this.player2Y += moveSpeed;
         } else {
-            // Улучшенный AI
+            // AI для PvE
             const paddleCenter = this.player2Y + this.paddleHeight / 2;
             const predictY = this.ballY + (this.ballSpeedY * (this.canvas.width - this.ballX) / Math.abs(this.ballSpeedX || 1));
             const targetY = Math.max(
