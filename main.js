@@ -6,24 +6,26 @@ const gameTitle = document.getElementById('game-title');
 const gameControls = document.getElementById('game-controls');
 let currentGame = null;
 
-document.querySelector('[data-game="pong"] button').addEventListener('click', () => {
-    startGame(Pong);
-});
-
+// --- Одно объявление функции! ---
 function startGame(GameClass) {
-    console.log("Запуск игры"); // Должно появиться в консоли
-    console.log(GameClass); // Должен вывести класс Pong
-    
+    // Настройка интерфейса
     gameTitle.textContent = GameClass.title;
     gameControls.textContent = GameClass.controls;
     canvas.width = 800;
     canvas.height = 500;
     
+    // Остановка предыдущей игры
+    if (currentGame) currentGame.stop();
+    
+    // Запуск новой
     currentGame = new GameClass(canvas);
     modal.style.display = 'block';
-    
-    console.log("Игра создана"); // Проверка
 }
+
+// Обработчик для кнопки Pong
+document.querySelector('[data-game="pong"] button').addEventListener('click', () => {
+    startGame(Pong);
+});
 
 // Закрытие игры
 document.querySelector('.close-btn').addEventListener('click', () => {
