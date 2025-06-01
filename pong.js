@@ -122,7 +122,7 @@ export class Pong {
         } else {
             // Улучшенный AI с предсказанием
             const paddleCenter = this.player2Y + this.paddleHeight / 2;
-            const predictY = this.ballY + (this.ballSpeedY * (this.canvas.width - this.ballX) / Math.abs(this.ballSpeedX);
+            const predictY = this.ballY + (this.ballSpeedY * (this.canvas.width - this.ballX) / Math.abs(this.ballSpeedX)
             const targetY = Math.max(
                 this.paddleHeight / 2,
                 Math.min(this.canvas.height - this.paddleHeight / 2, predictY)
