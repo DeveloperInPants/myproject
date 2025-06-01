@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pong Debug</title>
+    <style>
+        body { background: #0f0f1a; margin: 0; }
+        canvas { display: block; margin: 20px auto; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <script src="pong.js" type="module"></script>
+    <script type="module">
+        import { Pong } from './pong.js';
+        new Pong(document.getElementById('gameCanvas'));
+    </script>
+</body>
+</html>
