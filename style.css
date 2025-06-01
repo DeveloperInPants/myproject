@@ -1,0 +1,41 @@
+/* Основные стили */
+:root {
+    --neon-green: #00ff00;
+    --neon-pink: #ff00ff;
+    --dark-blue: #0f0f1a;
+}
+
+body {
+    background-color: var(--dark-blue);
+    color: var(--neon-green);
+    font-family: 'Courier New', monospace;
+}
+
+/* Стили игрового поля */
+#game-canvas {
+    display: block;
+    margin: 20px auto;
+    background: #000;
+    border: 2px solid var(--neon-green);
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 100;
+}
+
+.modal-content {
+    width: 80%;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: var(--dark-blue);
+    border: 3px solid var(--neon-pink);
+}
