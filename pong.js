@@ -5,7 +5,7 @@ export class Pong {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.keys = new Set();
+        this.keys = {};
         this.score = { player1: 0, player2: 0 };
         this.running = true;
         this.gameMode = null;
@@ -23,10 +23,12 @@ export class Pong {
         this.resetGame();
         
         // Обработчики событий
-        this.handleKeyDown = this.handleKeyDown.bind(this);
-        this.handleKeyUp = this.handleKeyUp.bind(this);
-        document.addEventListener('keydown', this.handleKeyDown);
-        document.addEventListener('keyup', this.handleKeyUp);
+        window.addEventListener('keydown', (e) => this.handleKeyDown(e));
+        window.addEventListener('keyup', (e) => this.handleKeyUp(e));
+        
+        // Фокус на canvas
+        canvas.tabIndex = 0;
+        canvas.focus();
         
         // Создаём UI
         this.createExitButton();
@@ -40,28 +42,7 @@ export class Pong {
     createExitButton() {
         this.exitBtn = document.createElement('button');
         this.exitBtn.textContent = 'Выход';
-        this.exitBtn.style.cssText = `
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 200;
-            padding: 8px 16px;
-            background: rgba(15, 15, 26, 0.7);
-            color: #00ff00;
-            border: 2px solid #00ff00;
-            font-family: 'Courier New', monospace;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s;
-        `;
-        this.exitBtn.addEventListener('mouseover', () => {
-            this.exitBtn.style.background = '#00ff00';
-            this.exitBtn.style.color = '#0f0f1a';
-        });
-        this.exitBtn.addEventListener('mouseout', () => {
-            this.exitBtn.style.background = 'rgba(15, 15, 26, 0.7)';
-            this.exitBtn.style.color = '#00ff00';
-        });
+        this.exitBtn.className = 'pong-button exit-button';
         this.exitBtn.addEventListener('click', () => {
             this.stop();
             document.getElementById('game-modal').style.display = 'none';
@@ -71,58 +52,21 @@ export class Pong {
     
     createModeSelection() {
         this.modeContainer = document.createElement('div');
-        this.modeContainer.style.cssText = `
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            background: rgba(15, 15, 26, 0.9);
-            padding: 30px;
-            border-radius: 10px;
-            border: 3px solid #00ff00;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-        `;
-
+        this.modeContainer.className = 'mode-selection';
+        
         const title = document.createElement('h2');
         title.textContent = 'ВЫБЕРИТЕ РЕЖИМ';
-        title.style.cssText = `
-            color: #00ff00;
-            font-family: 'Press Start 2P', cursive;
-            text-align: center;
-            margin: 0 0 20px 0;
-        `;
-
+        title.className = 'mode-title';
+        
         const modes = [
             { id: 'pvp', label: '🔵 PvP (2 игрока)', desc: 'W/S vs ↑/↓' },
             { id: 'pve', label: '🤖 PvE (против AI)', desc: 'W/S для игрока' }
         ];
-
+        
         modes.forEach(mode => {
             const btn = document.createElement('button');
+            btn.className = 'pong-button mode-button';
             btn.innerHTML = `<div>${mode.label}</div><small>${mode.desc}</small>`;
-            btn.style.cssText = `
-                padding: 15px 25px;
-                background: #333;
-                color: #00ff00;
-                border: 2px solid #00ff00;
-                font-family: 'Courier New', monospace;
-                cursor: pointer;
-                border-radius: 5px;
-                transition: all 0.3s;
-                text-align: center;
-            `;
-            btn.addEventListener('mouseover', () => {
-                btn.style.background = '#00ff00';
-                btn.style.color = '#0f0f1a';
-            });
-            btn.addEventListener('mouseout', () => {
-                btn.style.background = '#333';
-                btn.style.color = '#00ff00';
-            });
             btn.addEventListener('click', () => {
                 this.gameMode = mode.id;
                 this.modeContainer.remove();
@@ -132,25 +76,14 @@ export class Pong {
             });
             this.modeContainer.appendChild(btn);
         });
-
+        
+        this.modeContainer.prepend(title);
         document.getElementById('game-modal').appendChild(this.modeContainer);
     }
     
     createScoreDisplay() {
         this.scoreDisplay = document.createElement('div');
-        this.scoreDisplay.style.cssText = `
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            color: #00ff00;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 24px;
-            background: rgba(15, 15, 26, 0.7);
-            padding: 10px 20px;
-            border-radius: 5px;
-        `;
+        this.scoreDisplay.className = 'score-display';
         this.updateScoreDisplay();
         document.getElementById('game-modal').appendChild(this.scoreDisplay);
     }
@@ -158,36 +91,36 @@ export class Pong {
     updateScoreDisplay() {
         this.scoreDisplay.innerHTML = `
             ${this.score.player1} : ${this.score.player2}
-            ${this.winner ? `<div style="font-size:16px;color:#ffff00;">${this.winner} ПОБЕДИЛ!</div>` : ''}
+            ${this.winner ? `<div class="winner-text">${this.winner} ПОБЕДИЛ!</div>` : ''}
         `;
     }
     
     handleKeyDown(e) {
-        const validKeys = ['w', 's', 'ArrowUp', 'ArrowDown'];
-        if (validKeys.includes(e.key)) {
-            e.preventDefault();
-            this.keys.add(e.key);
-
-            // Старт игры при первом нажатии только в первом раунде
-            if (this.firstRound && !this.gameStarted && this.gameMode) {
-                this.gameStarted = true;
-                this.firstRound = false;
-                this.startBallMovement();
-            }
+        const key = e.key.toLowerCase();
+        this.keys[key] = true;
+        
+        // Старт игры при первом нажатии
+        if (!this.gameStarted && this.gameMode && !this.winner) {
+            this.gameStarted = true;
+            this.firstRound = false;
+            this.startBallMovement();
         }
-
+        
         // Выход по ESC при победе
-        if (e.key === 'Escape' && this.winner) {
+        if (key === 'escape' && this.winner) {
             this.stop();
             document.getElementById('game-modal').style.display = 'none';
+        }
+        
+        // Отмена действий по умолчанию для игровых клавиш
+        if (['w', 's', 'arrowup', 'arrowdown'].includes(key)) {
+            e.preventDefault();
         }
     }
     
     handleKeyUp(e) {
-        const validKeys = ['w', 's', 'ArrowUp', 'ArrowDown'];
-        if (validKeys.includes(e.key)) {
-            this.keys.delete(e.key);
-        }
+        const key = e.key.toLowerCase();
+        this.keys[key] = false;
     }
     
     resetGame() {
@@ -196,7 +129,6 @@ export class Pong {
         this.ballX = this.canvas.width / 2;
         this.ballY = this.canvas.height / 2;
         
-        // Мяч начинает движение автоматически после первого раунда
         if (this.firstRound) {
             this.ballSpeedX = 0;
             this.ballSpeedY = 0;
@@ -216,17 +148,18 @@ export class Pong {
     update(deltaTime) {
         if (!this.gameMode || this.winner) return;
         
-        // Движение платформы игрока 1 (W/S)
         const moveSpeed = 0.4 * deltaTime;
-        if (this.keys.has('w') && this.player1Y > 0) this.player1Y -= moveSpeed;
-        if (this.keys.has('s') && this.player1Y < this.canvas.height - this.paddleHeight) this.player1Y += moveSpeed;
         
-        // Движение платформы игрока 2 (↑/↓) или AI
+        // Движение игрока 1
+        if (this.keys['w'] && this.player1Y > 0) this.player1Y -= moveSpeed;
+        if (this.keys['s'] && this.player1Y < this.canvas.height - this.paddleHeight) this.player1Y += moveSpeed;
+        
+        // Движение игрока 2 или AI
         if (this.gameMode === 'pvp') {
-            if (this.keys.has('ArrowUp') && this.player2Y > 0) this.player2Y -= moveSpeed;
-            if (this.keys.has('ArrowDown') && this.player2Y < this.canvas.height - this.paddleHeight) this.player2Y += moveSpeed;
+            if (this.keys['arrowup'] && this.player2Y > 0) this.player2Y -= moveSpeed;
+            if (this.keys['arrowdown'] && this.player2Y < this.canvas.height - this.paddleHeight) this.player2Y += moveSpeed;
         } else {
-            // AI для PvE
+            // AI логика
             const paddleCenter = this.player2Y + this.paddleHeight / 2;
             const predictY = this.ballY + (this.ballSpeedY * (this.canvas.width - this.ballX) / Math.abs(this.ballSpeedX || 1));
             const targetY = Math.max(
@@ -239,7 +172,7 @@ export class Pong {
             else if (paddleCenter > targetY + 10) this.player2Y -= aiSpeed;
         }
         
-        // Движение мяча (если игра начата)
+        // Движение мяча
         if (this.gameStarted) {
             this.ballX += this.ballSpeedX * (deltaTime / 16);
             this.ballY += this.ballSpeedY * (deltaTime / 16);
@@ -266,15 +199,11 @@ export class Pong {
         // Гол
         if (this.ballX < 0) {
             this.score.player2++;
-            if (this.score.player2 >= this.winningScore) {
-                this.winner = 'ИГРОК 2';
-            }
+            if (this.score.player2 >= this.winningScore) this.winner = 'ИГРОК 2';
             this.resetGame();
         } else if (this.ballX > this.canvas.width) {
             this.score.player1++;
-            if (this.score.player1 >= this.winningScore) {
-                this.winner = 'ИГРОК 1';
-            }
+            if (this.score.player1 >= this.winningScore) this.winner = 'ИГРОК 1';
             this.resetGame();
         }
         
@@ -321,7 +250,7 @@ export class Pong {
         this.ctx.stroke();
         this.ctx.setLineDash([]);
         
-        // Сообщение "Нажмите клавишу" только в первом раунде
+        // Сообщение "Нажмите клавишу"
         if (this.firstRound && !this.gameStarted && this.gameMode && !this.winner) {
             this.ctx.font = '20px "Press Start 2P"';
             this.ctx.textAlign = 'center';
@@ -353,8 +282,8 @@ export class Pong {
     
     stop() {
         this.running = false;
-        document.removeEventListener('keydown', this.handleKeyDown);
-        document.removeEventListener('keyup', this.handleKeyUp);
+        window.removeEventListener('keydown', this.handleKeyDown);
+        window.removeEventListener('keyup', this.handleKeyUp);
         
         if (this.exitBtn) this.exitBtn.remove();
         if (this.modeContainer) this.modeContainer.remove();
