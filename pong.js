@@ -43,37 +43,36 @@ export class Pong {
     }
     
     createModeSelection() {
-        this.modeContainer = document.createElement('div');
-        this.modeContainer.className = 'mode-selection';
-        
-        const title = document.createElement('h2');
-        title.textContent = 'ВЫБЕРИТЕ РЕЖИМ';
-        title.className = 'mode-title';
-        
-        const modes = [
-            { id: 'pvp', label: '🔵 PvP (2 игрока)', desc: 'W/S vs ↑/↓' },
-            { id: 'pve', label: '🤖 PvE (против AI)', desc: 'W/S для игрока' }
-        ];
-        
-        modes.forEach(mode => {
-            const btn = document.createElement('button');
-            btn.className = 'mode-button';
-            btn.innerHTML = `${mode.label}<small>${mode.desc}</small>`;
-            btn.addEventListener('click', () => {
-                this.gameMode = mode.id;
-                this.modeContainer.remove();
-                this.createScoreDisplay();
-                this.gameStarted = false;
-                this.firstRound = true;
-                // Устанавливаем фокус после выбора режима
-                this.canvas.focus();
-            });
-            this.modeContainer.appendChild(btn);
+    this.modeContainer = document.createElement('div');
+    this.modeContainer.className = 'mode-selection';
+    
+    const title = document.createElement('h2');
+    title.textContent = 'SELECT GAME MODE';
+    title.className = 'mode-title';
+    
+    const modes = [
+        { id: 'pvp', label: '🕹️ PvP (2 PLAYERS)', desc: 'W/S vs ↑/↓' },
+        { id: 'pve', label: '🤖 PvE (VS COMPUTER)', desc: 'W/S to move' }
+    ];
+    
+    modes.forEach(mode => {
+        const btn = document.createElement('button');
+        btn.className = 'mode-button';
+        btn.innerHTML = `<span class="mode-label">${mode.label}</span><small>${mode.desc}</small>`;
+        btn.addEventListener('click', () => {
+            this.gameMode = mode.id;
+            this.modeContainer.remove();
+            this.createScoreDisplay();
+            this.gameStarted = false;
+            this.firstRound = true;
+            this.canvas.focus();
         });
-        
-        this.modeContainer.prepend(title);
-        document.getElementById('game-modal').appendChild(this.modeContainer);
-    }
+        this.modeContainer.appendChild(btn);
+    });
+    
+    this.modeContainer.prepend(title);
+    document.getElementById('game-modal').appendChild(this.modeContainer);
+}
     
     createScoreDisplay() {
     this.scoreDisplay = document.createElement('div');

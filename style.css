@@ -3,6 +3,8 @@
     --neon-green: #00ff00;
     --neon-pink: #ff00ff;
     --dark-blue: #0f0f1a;
+    --neon-blue: #00ffff;
+    --neon-purple: #ff00ff;
 }
 
 * {
@@ -16,27 +18,56 @@ body {
     color: var(--neon-green);
     font-family: 'Courier New', monospace;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
 /* Шапка */
 header {
     text-align: center;
-    padding: 20px 0;
+    padding: 30px 0;
     border-bottom: 3px solid var(--neon-green);
     margin-bottom: 30px;
+    background: rgba(15, 15, 26, 0.8);
+    position: relative;
+    z-index: 10;
+}
+
+header::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--neon-pink);
+    opacity: 0.7;
 }
 
 .logo {
     font-family: 'Press Start 2P', cursive;
-    font-size: 2rem;
-    margin-bottom: 10px;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+    letter-spacing: 2px;
+    color: var(--neon-green);
+    animation: textGlow 2s infinite alternate;
 }
 
 .tagline {
     font-style: italic;
     color: var(--neon-pink);
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+    font-family: 'Press Start 2P', cursive;
+}
+
+@keyframes textGlow {
+    from {
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(0, 255, 0, 1), 0 0 30px rgba(0, 255, 0, 0.5);
+    }
 }
 
 /* Основной контейнер */
@@ -45,91 +76,166 @@ header {
     flex-direction: column;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 30px;
 }
 
 /* Секция с игрой и историей */
 .game-section {
     display: flex;
-    margin-bottom: 20px;
-    gap: 30px;
+    margin-bottom: 30px;
+    gap: 40px;
     align-items: flex-start;
+    position: relative;
 }
 
 /* Карточка игры */
 .game-card {
-    background: rgba(15, 15, 26, 0.7);
-    border: 2px solid var(--neon-green);
-    border-radius: 5px;
-    padding: 20px;
+    background: rgba(15, 15, 26, 0.8);
+    border: 3px solid var(--neon-green);
+    border-radius: 8px;
+    padding: 25px;
     text-align: center;
-    transition: all 0.3s;
+    transition: all 0.4s;
     cursor: pointer;
-    width: 250px;
+    width: 280px;
     flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 2px solid var(--neon-pink);
+    border-radius: 8px;
+    z-index: -1;
+    opacity: 0.5;
 }
 
 .game-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    transform: translateY(-8px);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
 }
 
 .game-card h3 {
     font-family: 'Press Start 2P', cursive;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: var(--neon-green);
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+    letter-spacing: 1px;
 }
 
 .game-card button {
-    background: var(--dark-blue);
+    background: rgba(0, 0, 0, 0.5);
     color: var(--neon-green);
     border: 2px solid var(--neon-green);
-    padding: 10px 20px;
+    padding: 12px 25px;
     font-family: 'Press Start 2P', cursive;
     cursor: pointer;
     transition: all 0.3s;
-    border-radius: 5px;
-    font-size: 0.8rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
 }
 
 .game-card button:hover {
     background: var(--neon-green);
-    color: var(--dark-blue);
+    color: #000;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+}
+
+.game-card button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0.3),
+        rgba(255, 255, 255, 0)
+    );
+    transform: rotate(30deg);
+    transition: all 0.5s;
+}
+
+.game-card button:hover::after {
+    left: 100%;
 }
 
 /* История игры */
 .game-history {
     flex-grow: 1;
-    padding: 15px;
-    background: rgba(15, 15, 26, 0.5);
-    border-left: 3px solid var(--neon-pink);
-    padding-left: 25px;
+    padding: 20px;
+    background: rgba(15, 15, 26, 0.6);
+    border-left: 4px solid var(--neon-pink);
+    padding-left: 30px;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .game-history h2 {
     font-family: 'Press Start 2P', cursive;
     color: var(--neon-green);
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-    text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+}
+
+.game-history h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-green), transparent);
 }
 
 .game-history p {
-    margin-bottom: 10px;
-    color: #ccc;
+    margin-bottom: 15px;
+    color: #e0e0e0;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+.game-history p:last-child {
+    margin-bottom: 0;
+    color: var(--neon-blue);
+    font-style: italic;
 }
 
 /* Разделитель между играми */
 .game-divider {
     border: none;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
-    margin: 30px 0;
-    opacity: 0.5;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--neon-pink), 
+        var(--neon-green), 
+        var(--neon-pink), 
+        transparent);
+    margin: 40px 0;
+    opacity: 0.3;
+    border-radius: 3px;
 }
 
-/* Модальное окно (остаётся без изменений) */
+/* Модальное окно */
 .modal {
     display: none;
     position: fixed;
@@ -137,20 +243,34 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 100;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
     overflow: auto;
+    backdrop-filter: blur(5px);
 }
 
 .modal-content {
     position: relative;
-    width: 850px;
-    max-width: 90%;
-    margin: 30px auto;
-    padding: 25px;
-    background: var(--dark-blue);
-    border: 3px solid var(--neon-green);
-    box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+    width: 900px;
+    max-width: 95%;
+    margin: 40px auto;
+    padding: 30px;
+    background: rgba(15, 15, 26, 0.95);
+    border: 4px solid var(--neon-green);
+    box-shadow: 0 0 40px rgba(0, 255, 0, 0.8);
+    border-radius: 10px;
+    animation: modalAppear 0.4s ease-out;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Внутренний контент модального окна */
@@ -159,35 +279,38 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
 /* Кнопка закрытия */
 .close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     color: var(--neon-green);
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s;
     z-index: 1000;
     background: transparent;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
     font-family: 'Press Start 2P', cursive;
     line-height: 1;
+    border-radius: 50%;
+    border: 2px solid transparent;
 }
 
 .close-btn:hover {
     color: var(--neon-pink);
     transform: scale(1.1);
-    text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
+    text-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+    border-color: var(--neon-pink);
 }
 
 /* Игровое поле */
@@ -196,7 +319,9 @@ header {
     width: 800px;
     height: 500px;
     background: #000;
-    border: 2px solid var(--neon-green);
+    border: 3px solid var(--neon-green);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+    image-rendering: pixelated;
 }
 
 /* Заголовок игры */
@@ -204,8 +329,10 @@ header {
     font-family: 'Press Start 2P', cursive;
     color: var(--neon-green);
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     margin: 0;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    letter-spacing: 2px;
 }
 
 /* Управление */
@@ -213,76 +340,262 @@ header {
     font-family: 'Press Start 2P', cursive;
     color: var(--neon-pink);
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 1rem;
     margin: 0;
+    text-shadow: 0 0 8px rgba(255, 0, 255, 0.4);
+    letter-spacing: 1px;
 }
 
 /* Счёт игры */
 .score-display {
     color: var(--neon-green);
     font-family: 'Press Start 2P', cursive;
-    font-size: 26px;
-    background: rgba(15, 15, 26, 0.8);
-    padding: 12px 25px;
-    border-radius: 8px;
-    border: 2px solid var(--neon-pink);
+    font-size: 28px;
+    background: rgba(15, 15, 26, 0.9);
+    padding: 15px 30px;
+    border-radius: 10px;
+    border: 3px solid var(--neon-pink);
     text-align: center;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+    margin-bottom: 10px;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+/* Стили для выбора режима в Pong */
+.mode-selection {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    background: rgba(15, 15, 26, 0.97);
+    padding: 40px;
+    border-radius: 15px;
+    border: 4px solid var(--neon-green);
+    box-shadow: 0 0 40px rgba(0, 255, 0, 0.7);
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    backdrop-filter: blur(5px);
+    animation: pulseBorder 3s infinite;
+}
+
+@keyframes pulseBorder {
+    0% { border-color: var(--neon-green); box-shadow: 0 0 30px rgba(0, 255, 0, 0.7); }
+    50% { border-color: var(--neon-pink); box-shadow: 0 0 40px rgba(255, 0, 255, 0.7); }
+    100% { border-color: var(--neon-green); box-shadow: 0 0 30px rgba(0, 255, 0, 0.7); }
+}
+
+.mode-title {
+    color: var(--neon-green);
+    font-family: 'Press Start 2P', cursive;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+    letter-spacing: 2px;
+    position: relative;
+}
+
+.mode-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+}
+
+.mode-button {
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--neon-green);
+    border: 3px solid var(--neon-green);
+    padding: 18px 25px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mode-button:hover {
+    background: var(--neon-green);
+    color: var(--dark-blue);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.9);
+    transform: translateY(-5px);
+    border-color: var(--neon-blue);
+}
+
+.mode-button:active {
+    transform: translateY(0);
+}
+
+.mode-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(0, 255, 255, 0.2), 
+        transparent);
+    transition: all 0.5s;
+}
+
+.mode-button:hover::before {
+    left: 100%;
+}
+
+.mode-button small {
+    display: block;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    color: var(--neon-pink);
+    text-shadow: 0 0 8px rgba(255, 0, 255, 0.5);
+    letter-spacing: 0;
+}
+
+/* Анимация для кнопок */
+@keyframes buttonFloat {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+
+.mode-button {
+    animation: buttonFloat 4s infinite;
+}
+
+.mode-button:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.mode-button:nth-child(3) {
+    animation-delay: 0.4s;
 }
 
 /* Адаптивность */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .game-section {
         flex-direction: column;
+        gap: 25px;
     }
     
     .game-card {
         width: 100%;
-        margin-bottom: 20px;
+        max-width: 400px;
+        margin: 0 auto;
     }
     
     .game-history {
         border-left: none;
-        border-top: 3px solid var(--neon-pink);
-        padding-left: 15px;
-        padding-top: 20px;
+        border-top: 4px solid var(--neon-pink);
+        padding-left: 20px;
+        padding-top: 25px;
+        border-radius: 0 0 8px 8px;
     }
     
+    .logo {
+        font-size: 2rem;
+    }
+    
+    .tagline {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
     .modal-content {
-        width: 95%;
         padding: 20px;
     }
     
     #game-canvas {
         width: 100%;
-        max-width: 800px;
         height: auto;
-        aspect-ratio: 8/5;
+        aspect-ratio: 16/10;
+    }
+    
+    #game-title {
+        font-size: 1.4rem;
+    }
+    
+    #game-controls {
+        font-size: 0.8rem;
+    }
+    
+    .score-display {
+        font-size: 22px;
+        padding: 12px 20px;
+    }
+    
+    .mode-selection {
+        padding: 30px 20px;
+    }
+    
+    .mode-title {
+        font-size: 1.2rem;
+    }
+    
+    .mode-button {
+        font-size: 0.9rem;
+        padding: 15px 20px;
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
     .logo {
         font-size: 1.5rem;
     }
     
     .tagline {
-        font-size: 1rem;
-    }
-    
-    #game-title {
-        font-size: 1.3rem;
-    }
-    
-    #game-controls {
-        font-size: 0.7rem;
-    }
-    
-    .score-display {
-        font-size: 20px;
-        padding: 8px 15px;
+        font-size: 0.9rem;
     }
     
     .game-history h2 {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+    }
+    
+    .game-history p {
+        font-size: 1rem;
+    }
+    
+    .mode-selection {
+        width: 95%;
+        padding: 25px 15px;
+    }
+    
+    .mode-title {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+    
+    .mode-button {
+        font-size: 0.8rem;
+        padding: 12px 15px;
+    }
+    
+    .mode-button small {
+        font-size: 0.7rem;
+    }
+    
+    .close-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 24px;
     }
 }
