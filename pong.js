@@ -70,11 +70,13 @@ export class Pong {
 }
     
     createScoreDisplay() {
-        this.scoreDisplay = document.createElement('div');
-        this.scoreDisplay.className = 'score-display';
-        this.updateScoreDisplay();
-        document.getElementById('game-modal').appendChild(this.scoreDisplay);
-    }
+    this.scoreDisplay = document.createElement('div');
+    this.scoreDisplay.className = 'score-display';
+    this.updateScoreDisplay();
+    // Вставляем счёт после заголовка и перед canvas
+    const canvas = document.getElementById('game-canvas');
+    canvas.parentNode.insertBefore(this.scoreDisplay, canvas);
+}
     
     updateScoreDisplay() {
         this.scoreDisplay.innerHTML = `

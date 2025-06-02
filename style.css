@@ -35,12 +35,51 @@ header {
     color: var(--neon-pink);
 }
 
-/* Игровое поле */
-#game-canvas {
-    display: block;
-    margin: 20px auto;
-    background: #000;
+/* Игровая сетка */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.game-card {
+    background: rgba(15, 15, 26, 0.7);
     border: 2px solid var(--neon-green);
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.game-card h3 {
+    font-family: 'Press Start 2P', cursive;
+    margin-bottom: 15px;
+    color: var(--neon-green);
+}
+
+.game-card button {
+    background: var(--dark-blue);
+    color: var(--neon-green);
+    border: 2px solid var(--neon-green);
+    padding: 10px 20px;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 5px;
+}
+
+.game-card button:hover {
+    background: var(--neon-green);
+    color: var(--dark-blue);
 }
 
 /* Модальное окно */
@@ -53,19 +92,23 @@ header {
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     z-index: 100;
+    overflow: auto;
 }
 
 .modal-content {
     position: relative;
-    width: 80%;
+    width: fit-content;
     max-width: 800px;
     margin: 50px auto;
     padding: 20px;
     background: var(--dark-blue);
     border: 3px solid var(--neon-green);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Обновлённые стили для кнопки закрытия */
+/* Кнопка закрытия */
 .close-btn {
     position: absolute;
     top: 10px;
@@ -93,7 +136,47 @@ header {
     text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
 }
 
-/* Стили для кнопок режима игры */
+/* Игровое поле */
+#game-canvas {
+    display: block;
+    margin: 20px auto 0;
+    background: #000;
+    border: 2px solid var(--neon-green);
+}
+
+/* Заголовок игры */
+#game-title {
+    font-family: 'Press Start 2P', cursive;
+    color: var(--neon-green);
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+/* Управление */
+#game-controls {
+    font-family: 'Press Start 2P', cursive;
+    color: var(--neon-pink);
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+/* Счёт игры */
+.score-display {
+    position: static;
+    margin: 0 auto 20px;
+    color: var(--neon-green);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 24px;
+    background: rgba(15, 15, 26, 0.7);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    width: fit-content;
+}
+
+/* Выбор режима игры */
 .mode-selection {
     position: absolute;
     top: 50%;
@@ -146,29 +229,28 @@ header {
     color: var(--neon-pink);
 }
 
-/* Стили для кнопок в целом */
-.pong-button {
-    background: var(--dark-blue);
-    color: var(--neon-green);
-    border: 2px solid var(--neon-green);
-    padding: 10px 20px;
-    font-family: 'Press Start 2P', cursive;
-    cursor: pointer;
-    transition: all 0.3s;
-    border-radius: 5px;
-}
-
-.pong-button:hover {
-    background: var(--neon-green);
-    color: var(--dark-blue);
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
-}
-
-/* Адаптивность для модального окна */
+/* Адаптивность */
 @media (max-width: 768px) {
+    .logo {
+        font-size: 1.5rem;
+    }
+    
     .modal-content {
         width: 95%;
         padding: 15px;
+        margin: 20px auto;
+    }
+    
+    #game-title {
+        font-size: 1.2rem;
+    }
+    
+    #game-controls {
+        font-size: 0.7rem;
+    }
+    
+    .score-display {
+        font-size: 20px;
     }
     
     .mode-selection {
@@ -183,5 +265,20 @@ header {
     .mode-button {
         font-size: 0.8rem;
         padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.2rem;
+    }
+    
+    .game-card h3 {
+        font-size: 0.9rem;
+    }
+    
+    .game-card button {
+        padding: 8px 16px;
+        font-size: 0.8rem;
     }
 }
