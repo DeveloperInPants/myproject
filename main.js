@@ -1,5 +1,6 @@
 import { Pong } from './pong.js';
 import { SpaceInvaders } from './space-invaders.js';
+import { Snake } from './snake.js';
 
 const modal = document.getElementById('game-modal');
 const canvas = document.getElementById('game-canvas');
@@ -19,17 +20,60 @@ function startGame(GameClass) {
     modal.style.display = 'block';
 }
 
-// Обработчик для кнопки Pong
+// Обработчики для кнопок
 document.querySelector('[data-game="pong"] button').addEventListener('click', () => {
     startGame(Pong);
+});
+
+document.querySelector('[data-game="space-invaders"] button').addEventListener('click', () => {
+    startGame(SpaceInvaders);
+});
+
+document.querySelector('[data-game="snake"] button').addEventListener('click', () => {
+    startGame(Snake);
+});
+
+// Заглушки для Tetris и Pacman
+document.querySelector('[data-game="tetris"] button').addEventListener('click', () => {
+    gameTitle.textContent = "TETRIS (1984)";
+    gameControls.textContent = "Реализация в разработке";
+    canvas.width = 800;
+    canvas.height = 500;
+    
+    if (currentGame) currentGame.stop();
+    
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '30px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffff00';
+    ctx.fillText('COMING SOON', canvas.width / 2, canvas.height / 2);
+    
+    modal.style.display = 'block';
+});
+
+document.querySelector('[data-game="pacman"] button').addEventListener('click', () => {
+    gameTitle.textContent = "PAC-MAN (1980)";
+    gameControls.textContent = "Реализация в разработке";
+    canvas.width = 800;
+    canvas.height = 500;
+    
+    if (currentGame) currentGame.stop();
+    
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '30px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffff00';
+    ctx.fillText('COMING SOON', canvas.width / 2, canvas.height / 2);
+    
+    modal.style.display = 'block';
 });
 
 // Закрытие игры
 document.querySelector('.close-btn').addEventListener('click', () => {
     modal.style.display = 'none';
     if (currentGame) currentGame.stop();
-});
-
-document.querySelector('[data-game="space-invaders"] button').addEventListener('click', () => {
-    startGame(SpaceInvaders);
 });
