@@ -14,6 +14,13 @@ export class Snake {
         this.speed = 100;
         this.gridSize = 20;
         
+        // Создаем scoreDisplay ДО resetGame
+        this.scoreDisplay = document.createElement('div');
+        this.scoreDisplay.className = 'score-display';
+        this.scoreDisplay.id = 'game-score';
+        const canvasElement = document.getElementById('game-canvas');
+        canvasElement.parentNode.insertBefore(this.scoreDisplay, canvasElement);
+        
         this.resetGame();
         
         this.keyDownHandler = (e) => this.handleKeyDown(e);
@@ -22,7 +29,6 @@ export class Snake {
         canvas.tabIndex = 0;
         canvas.focus();
         
-        this.createScoreDisplay();
         this.lastTime = 0;
         this.lastMove = 0;
         this.gameLoop(0);
@@ -244,11 +250,13 @@ export class Snake {
     }
     
     updateScoreDisplay() {
-        this.scoreDisplay.innerHTML = `
-            SCORE: ${this.score} | HIGH: ${this.highScore}
-            ${this.gameOver ? '<div class="winner-text">GAME OVER</div>' : ''}
-            ${this.paused ? '<div class="paused-text">PAUSED</div>' : ''}
-        `;
+        if (this.scoreDisplay) {  // Добавляем проверку на существование
+            this.scoreDisplay.innerHTML = `
+                SCORE: ${this.score} | HIGH: ${this.highScore}
+                ${this.gameOver ? '<div class="winner-text">GAME OVER</div>' : ''}
+                ${this.paused ? '<div class="paused-text">PAUSED</div>' : ''}
+            `;
+        }
     }
     
     gameLoop(timestamp) {
