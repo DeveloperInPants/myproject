@@ -28,14 +28,18 @@
     </main>
 
     <!-- Модальное окно -->
-    <div id="game-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">✕</span>
+    <!-- Модальное окно -->
+<div id="game-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">✕</span>
+        <div class="modal-inner">
             <h2 id="game-title"></h2>
-            <canvas id="game-canvas"></canvas>
             <div id="game-controls"></div>
+            <div id="game-score" class="score-display"></div>
+            <canvas id="game-canvas"></canvas>
         </div>
     </div>
+</div>
 
     <!-- Подключаем игры -->
     <script src="pong.js" type="module"></script>

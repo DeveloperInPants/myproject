@@ -72,10 +72,12 @@ export class Pong {
     createScoreDisplay() {
     this.scoreDisplay = document.createElement('div');
     this.scoreDisplay.className = 'score-display';
+    this.scoreDisplay.id = 'game-score';
     this.updateScoreDisplay();
-    // Вставляем счёт после заголовка и перед canvas
+    // Вставляем счёт в modal-inner перед canvas
     const canvas = document.getElementById('game-canvas');
     canvas.parentNode.insertBefore(this.scoreDisplay, canvas);
+}
 }
     
     updateScoreDisplay() {
