@@ -98,3 +98,30 @@ document.querySelector('.close-btn').addEventListener('click', () => {
     modal.style.display = 'none';
     if (currentGame) currentGame.stop();
 });
+// Preloader
+window.addEventListener('load', () => {
+  const preloader = document.querySelector('.preloader');
+  setTimeout(() => {
+    preloader.style.opacity = '0';
+    setTimeout(() => {
+      preloader.style.display = 'none';
+    }, 500);
+  }, 1000);
+});
+
+// Back to top button
+const backToTopButton = document.querySelector('.back-to-top');
+window.addEventListener('scroll', () => {
+  if (window.pageYOffset > 300) {
+    backToTopButton.classList.add('visible');
+  } else {
+    backToTopButton.classList.remove('visible');
+  }
+});
+
+backToTopButton.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
