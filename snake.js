@@ -1,6 +1,6 @@
 export class Snake {
     static title = "SNEIK (1976)";
-    static controls = "Управление: ←/→/↑/↓ (движение), ПРОБЕЛ (пауза)";
+    static controls = "Управление: ←/→/↑/↓ (движение), ПРОБЕЛ (пауза), R (рестарт)";
     
     constructor(canvas) {
         this.canvas = canvas;
@@ -61,12 +61,20 @@ export class Snake {
             document.querySelector('.close-btn').click();
         }
         
+        // Рестарт игры при нажатии R
+        if (key === 'r' && this.gameOver) {
+            this.resetGame();
+            this.score = 0;
+            this.speed = 100;
+            return;
+        }
+        
         if (key === ' ' && !this.gameOver) {
             this.paused = !this.paused;
             this.updateScoreDisplay();
         }
         
-        if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown', ' '].includes(key)) {
+        if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown', ' ', 'r'].includes(key)) {
             e.preventDefault();
         }
     }
