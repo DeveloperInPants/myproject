@@ -15,53 +15,98 @@
     </header>
 
     <!-- Контент -->
-    <main>
-        <div class="games-grid">
+    <main class="game-history-container">
         <!-- Pong -->
+        <section class="game-section">
             <div class="game-card" data-game="pong">
                 <h3>PONG</h3>
                 <button>PLAY</button>
             </div>
-    
+            <div class="game-history">
+                <h2>PONG (1972)</h2>
+                <p>Pong - одна из первых аркадных видеоигр, разработанная Atari. Это упрощённый симулятор настольного тенниса, где два игрока управляют "ракетками", отбивая "мяч".</p>
+                <p>Создатель: Аллан Алкорн (Allan Alcorn)</p>
+                <p>Интересный факт: Первый прототип Pong был установлен в баре Andy Capp's Tavern в Калифорнии, где сломался из-за переполнения монетоприёмника.</p>
+            </div>
+        </section>
+
+        <hr class="game-divider">
+
+        <!-- Space Invaders -->
+        <section class="game-section">
             <div class="game-card" data-game="space-invaders">
                 <h3>SPACE INVADERS</h3>
                 <button>PLAY</button>
             </div>
-    
-            <!-- Snake -->
+            <div class="game-history">
+                <h2>SPACE INVADERS (1978)</h2>
+                <p>Space Invaders - культовая аркадная игра, разработанная Tomohiro Nishikado и выпущенная Taito. Игрок управляет лазерной пушкой, уничтожающей волны инопланетян.</p>
+                <p>Создатель: Tomohiro Nishikado</p>
+                <p>Интересный факт: Игра стала настолько популярной в Японии, что вызвала нехватку 100-иеновых монет.</p>
+            </div>
+        </section>
+
+        <hr class="game-divider">
+
+        <!-- Snake -->
+        <section class="game-section">
             <div class="game-card" data-game="snake">
                 <h3>SNAKE</h3>
                 <button>PLAY</button>
             </div>
-    
-            <!-- Pacman -->
+            <div class="game-history">
+                <h2>SNAKE (1976)</h2>
+                <p>Змейка - классическая игра, где игрок управляет растущей змейкой, которая должна собирать еду, избегая столкновений с собой и стенами.</p>
+                <p>Первая версия: Blockade (1976), разработанная Gremlin Industries.</p>
+                <p>Интересный факт: Популярность обрела после появления на телефонах Nokia в 1998 году.</p>
+            </div>
+        </section>
+
+        <hr class="game-divider">
+
+        <!-- Pacman -->
+        <section class="game-section">
             <div class="game-card" data-game="pacman">
                 <h3>PAC-MAN</h3>
                 <button>PLAY</button>
             </div>
-            
-            <!-- Tetris -->
+            <div class="game-history">
+                <h2>PAC-MAN (1980)</h2>
+                <p>Pac-Man - культовая аркадная игра, разработанная Namco. Жёлтый круглый персонаж должен съедать точки в лабиринте, избегая призраков.</p>
+                <p>Создатель: Тору Иватани (Toru Iwatani)</p>
+                <p>Интересный факт: Первоначальное название было "Puck-Man", но было изменено из-за вандалов, меняющих "P" на "F".</p>
+            </div>
+        </section>
+
+        <hr class="game-divider">
+
+        <!-- Tetris -->
+        <section class="game-section">
             <div class="game-card" data-game="tetris">
                 <h3>TETRIS</h3>
                 <button>PLAY</button>
             </div>
-    
-        </div>
+            <div class="game-history">
+                <h2>TETRIS (1984)</h2>
+                <p>Tetris - культовая головоломка, где игрок должен правильно размещать падающие фигуры (тетромино).</p>
+                <p>Создатель: Алексей Пажитнов (СССР)</p>
+                <p>Интересный факт: Первая версия была создана на компьютере Электроника-60 и распространялась бесплатно среди коллег.</p>
+            </div>
+        </section>
     </main>
 
     <!-- Модальное окно -->
-    <!-- Модальное окно -->
-<div id="game-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">✕</span>
-        <div class="modal-inner">
-            <h2 id="game-title"></h2>
-            <div id="game-controls"></div>
-            <div id="game-score" class="score-display"></div>
-            <canvas id="game-canvas"></canvas>
+    <div id="game-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">✕</span>
+            <div class="modal-inner">
+                <h2 id="game-title"></h2>
+                <div id="game-controls"></div>
+                <div id="game-score" class="score-display"></div>
+                <canvas id="game-canvas"></canvas>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- Подключаем игры -->
     <script src="pong.js" type="module"></script>
