@@ -9,6 +9,10 @@ const gameControls = document.getElementById('game-controls');
 let currentGame = null;
 
 function startGame(GameClass) {
+    // Очищаем предыдущие обработчики
+    window.removeEventListener('keydown', handleGlobalKeyDown);
+    window.removeEventListener('keyup', handleGlobalKeyUp);
+    
     gameTitle.textContent = GameClass.title;
     gameControls.textContent = GameClass.controls;
     canvas.width = 800;
@@ -18,20 +22,22 @@ function startGame(GameClass) {
     
     currentGame = new GameClass(canvas);
     modal.style.display = 'block';
+    
+    // Устанавливаем фокус на canvas для обработки клавиш
+    canvas.focus();
+}
+
+// Глобальные обработчики для кнопок
+function handleGameButtonClick(gameClass) {
+    return function() {
+        startGame(gameClass);
+    };
 }
 
 // Обработчики для кнопок
-document.querySelector('[data-game="pong"] button').addEventListener('click', () => {
-    startGame(Pong);
-});
-
-document.querySelector('[data-game="space-invaders"] button').addEventListener('click', () => {
-    startGame(SpaceInvaders);
-});
-
-document.querySelector('[data-game="snake"] button').addEventListener('click', () => {
-    startGame(Snake);
-});
+document.querySelector('[data-game="pong"] button').addEventListener('click', handleGameButtonClick(Pong));
+document.querySelector('[data-game="space-invaders"] button').addEventListener('click', handleGameButtonClick(SpaceInvaders));
+document.querySelector('[data-game="snake"] button').addEventListener('click', handleGameButtonClick(Snake));
 
 // Заглушки для Tetris и Pacman
 document.querySelector('[data-game="tetris"] button').addEventListener('click', () => {
@@ -71,6 +77,21 @@ document.querySelector('[data-game="pacman"] button').addEventListener('click', 
     
     modal.style.display = 'block';
 });
+
+// Глобальные обработчики для клавиш (например, ESC для закрытия)
+function handleGlobalKeyDown(e) {
+    if (e.key === 'Escape') {
+        modal.style.display = 'none';
+        if (currentGame) currentGame.stop();
+    }
+}
+
+function handleGlobalKeyUp(e) {
+    // Можно добавить общую логику здесь
+}
+
+window.addEventListener('keydown', handleGlobalKeyDown);
+window.addEventListener('keyup', handleGlobalKeyUp);
 
 // Закрытие игры
 document.querySelector('.close-btn').addEventListener('click', () => {

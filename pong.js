@@ -23,12 +23,16 @@ export class Pong {
         this.resetGame();
         
         // Обработчики событий
-        window.addEventListener('keydown', (e) => this.handleKeyDown(e));
-        window.addEventListener('keyup', (e) => this.handleKeyUp(e));
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleKeyUp = this.handleKeyUp.bind(this);
         
-        // Фокус на canvas
+        // Устанавливаем фокус на canvas
         canvas.tabIndex = 0;
         canvas.focus();
+        
+        // Добавляем обработчики напрямую к canvas
+        canvas.addEventListener('keydown', this.handleKeyDown);
+        canvas.addEventListener('keyup', this.handleKeyUp);
         
         // Создаём UI
         this.createModeSelection();
@@ -39,35 +43,37 @@ export class Pong {
     }
     
     createModeSelection() {
-    this.modeContainer = document.createElement('div');
-    this.modeContainer.className = 'mode-selection';
-    
-    const title = document.createElement('h2');
-    title.textContent = 'ВЫБЕРИТЕ РЕЖИМ';
-    title.className = 'mode-title';
-    
-    const modes = [
-        { id: 'pvp', label: '🔵 PvP (2 игрока)', desc: 'W/S vs ↑/↓' },
-        { id: 'pve', label: '🤖 PvE (против AI)', desc: 'W/S для игрока' }
-    ];
-    
-    modes.forEach(mode => {
-        const btn = document.createElement('button');
-        btn.className = 'mode-button';
-        btn.innerHTML = `${mode.label}<small>${mode.desc}</small>`;
-        btn.addEventListener('click', () => {
-            this.gameMode = mode.id;
-            this.modeContainer.remove();
-            this.createScoreDisplay();
-            this.gameStarted = false;
-            this.firstRound = true;
+        this.modeContainer = document.createElement('div');
+        this.modeContainer.className = 'mode-selection';
+        
+        const title = document.createElement('h2');
+        title.textContent = 'ВЫБЕРИТЕ РЕЖИМ';
+        title.className = 'mode-title';
+        
+        const modes = [
+            { id: 'pvp', label: '🔵 PvP (2 игрока)', desc: 'W/S vs ↑/↓' },
+            { id: 'pve', label: '🤖 PvE (против AI)', desc: 'W/S для игрока' }
+        ];
+        
+        modes.forEach(mode => {
+            const btn = document.createElement('button');
+            btn.className = 'mode-button';
+            btn.innerHTML = `${mode.label}<small>${mode.desc}</small>`;
+            btn.addEventListener('click', () => {
+                this.gameMode = mode.id;
+                this.modeContainer.remove();
+                this.createScoreDisplay();
+                this.gameStarted = false;
+                this.firstRound = true;
+                // Устанавливаем фокус после выбора режима
+                this.canvas.focus();
+            });
+            this.modeContainer.appendChild(btn);
         });
-        this.modeContainer.appendChild(btn);
-    });
-    
-    this.modeContainer.prepend(title);
-    document.getElementById('game-modal').appendChild(this.modeContainer);
-}
+        
+        this.modeContainer.prepend(title);
+        document.getElementById('game-modal').appendChild(this.modeContainer);
+    }
     
     createScoreDisplay() {
     this.scoreDisplay = document.createElement('div');
@@ -110,21 +116,13 @@ export class Pong {
         this.keys[key] = false;
     }
     
-    resetGame() {
-        this.player1Y = this.canvas.height / 2 - this.paddleHeight / 2;
-        this.player2Y = this.canvas.height / 2 - this.paddleHeight / 2;
-        this.ballX = this.canvas.width / 2;
-        this.ballY = this.canvas.height / 2;
+    stop() {
+        this.running = false;
+        this.canvas.removeEventListener('keydown', this.handleKeyDown);
+        this.canvas.removeEventListener('keyup', this.handleKeyUp);
         
-        if (this.firstRound) {
-            this.ballSpeedX = 0;
-            this.ballSpeedY = 0;
-            this.gameStarted = false;
-        } else {
-            this.ballSpeedX = 5 * (Math.random() > 0.5 ? 1 : -1);
-            this.ballSpeedY = 3 * (Math.random() > 0.5 ? 1 : -1);
-            this.gameStarted = true;
-        }
+        if (this.modeContainer) this.modeContainer.remove();
+        if (this.scoreDisplay) this.scoreDisplay.remove();
     }
     
     startBallMovement() {
