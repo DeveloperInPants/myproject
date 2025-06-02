@@ -65,38 +65,35 @@ header {
     border: 3px solid var(--neon-green);
 }
 
-/* Кнопка закрытия в стиле ретро */
+/* Обновлённые стили для кнопки закрытия */
 .close-btn {
     position: absolute;
-    top: -15px;
-    right: -15px;
+    top: 10px;
+    right: 10px;
     color: var(--neon-green);
-    font-size: 30px;
+    font-size: 24px;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s;
     z-index: 1000;
-    background: var(--dark-blue);
-    width: 50px;
-    height: 50px;
+    background: transparent;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    border: 3px solid var(--neon-green);
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    border: none;
     font-family: 'Press Start 2P', cursive;
     line-height: 1;
 }
 
 .close-btn:hover {
-    color: var(--dark-blue);
-    background: var(--neon-green);
+    color: var(--neon-pink);
     transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
 }
 
-/* Стили для Pong */
+/* Стили для кнопок режима игры */
 .mode-selection {
     position: absolute;
     top: 50%;
@@ -111,34 +108,80 @@ header {
     border-radius: 10px;
     border: 3px solid var(--neon-green);
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    width: 80%;
+    max-width: 400px;
 }
 
-.score-display {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
+.mode-title {
     color: var(--neon-green);
     font-family: 'Press Start 2P', cursive;
-    font-size: 24px;
-    background: rgba(15, 15, 26, 0.7);
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.mode-button {
+    background: var(--dark-blue);
+    color: var(--neon-green);
+    border: 2px solid var(--neon-green);
+    padding: 15px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.mode-button:hover {
+    background: var(--neon-green);
+    color: var(--dark-blue);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+}
+
+.mode-button small {
+    display: block;
+    font-size: 0.7rem;
+    margin-top: 8px;
+    color: var(--neon-pink);
+}
+
+/* Стили для кнопок в целом */
+.pong-button {
+    background: var(--dark-blue);
+    color: var(--neon-green);
+    border: 2px solid var(--neon-green);
     padding: 10px 20px;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    transition: all 0.3s;
     border-radius: 5px;
 }
 
-/* Адаптивность */
+.pong-button:hover {
+    background: var(--neon-green);
+    color: var(--dark-blue);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+}
+
+/* Адаптивность для модального окна */
 @media (max-width: 768px) {
     .modal-content {
         width: 95%;
-        margin: 20px auto;
+        padding: 15px;
     }
     
-    .close-btn {
-        top: -10px;
-        right: -10px;
-        width: 40px;
-        height: 40px;
-        font-size: 24px;
+    .mode-selection {
+        width: 90%;
+        padding: 20px;
+    }
+    
+    .mode-title {
+        font-size: 1rem;
+    }
+    
+    .mode-button {
+        font-size: 0.8rem;
+        padding: 12px;
     }
 }
