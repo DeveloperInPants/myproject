@@ -61,21 +61,21 @@ export class SpaceInvaders {
     }
     
     handleKeyDown(e) {
-        const key = e.key.toLowerCase();
-        this.keys[key] = true;
-        
-        if (!this.gameStarted && !this.gameOver) {
-            this.gameStarted = true;
-        }
-        
-        if (key === 'escape' && this.gameOver) {
-            document.querySelector('.close-btn').click();
-        }
-        
-        if (['arrowleft', 'arrowright', ' '].includes(key)) {
-            e.preventDefault();
-        }
+    const key = e.key.toLowerCase();
+    this.keys[key] = true;
+    
+    if (!this.gameStarted && !this.gameOver) {
+        this.gameStarted = true;
     }
+    
+    if (key === 'escape' && this.gameOver) {
+        document.querySelector('.close-btn').click();
+    }
+    
+    if (['arrowleft', 'arrowright', ' '].includes(key)) {
+        e.preventDefault();
+    }
+}
     
     handleKeyUp(e) {
         const key = e.key.toLowerCase();
@@ -83,38 +83,39 @@ export class SpaceInvaders {
     }
     
     resetGame() {
-        // Игрок
-        this.playerX = this.canvas.width / 2 - this.playerWidth / 2;
-        this.playerY = this.canvas.height - this.playerHeight - 20;
-        this.playerSpeed = 5;
-        
-        // Пули
-        this.playerBullets = [];
-        this.invaderBullets = [];
-        this.bulletSpeed = 7;
-        this.lastPlayerShot = 0;
-        this.shotDelay = 500; // мс между выстрелами
-        
-        // Пришельцы
-        this.invaders = [];
-        this.invaderRows = 5;
-        this.invaderCols = 11;
-        this.invaderSpeed = 0.5 + (this.level * 0.1);
-        this.invaderDirection = 1;
-        this.invaderDrop = 20;
-        this.lastInvaderMove = 0;
-        this.invaderMoveDelay = Math.max(200, 1000 - (this.level * 100));
-        this.lastInvaderShot = 0;
-        this.invaderShotDelay = 1000;
-        this.createInvaders();
-        
-        // Бункеры
-        this.bunkers = [];
-        this.createBunkers();
-        
-        // Игровое состояние
-        this.gameStarted = false;
-    }
+    // Игрок
+    this.playerX = this.canvas.width / 2 - this.playerWidth / 2;
+    this.playerY = this.canvas.height - this.playerHeight - 20;
+    this.playerSpeed = 5;
+    
+    // Пули
+    this.playerBullets = [];
+    this.invaderBullets = [];
+    this.bulletSpeed = 7;
+    this.lastPlayerShot = 0;
+    this.shotDelay = 500; // мс между выстрелами
+    
+    // Пришельцы
+    this.invaders = [];
+    this.invaderRows = 5;
+    this.invaderCols = 11;
+    this.invaderSpeed = 0.5 + (this.level * 0.1);
+    this.invaderDirection = 1;
+    this.invaderDrop = 20;
+    this.lastInvaderMove = 0;
+    this.invaderMoveDelay = Math.max(200, 1000 - (this.level * 100));
+    this.lastInvaderShot = 0;
+    this.invaderShotDelay = 1000;
+    this.createInvaders();
+    
+    // Бункеры
+    this.bunkers = [];
+    this.createBunkers();
+    
+    // Игровое состояние
+    this.gameStarted = false; // Добавь эту строку
+    this.gameOver = false; // На всякий случай сбросим и этот флаг
+}
     
     createInvaders() {
         const startX = (this.canvas.width - (this.invaderCols * (this.invaderWidth + 10))) / 2;
