@@ -10,82 +10,72 @@ export class Snake {
         this.gameOver = false;
         this.paused = false;
         this.score = 0;
-        this.highScore = 0;
-        this.speed = 100; // ms per move
+        this.highScore = localStorage.getItem('snakeHighScore') || 0;
+        this.speed = 100;
         this.gridSize = 20;
         
-        // Инициализация змейки и еды
         this.resetGame();
         
-        // Обработчики событий
         this.keyDownHandler = (e) => this.handleKeyDown(e);
-        this.keyUpHandler = (e) => this.handleKeyUp(e);
         window.addEventListener('keydown', this.keyDownHandler);
-        window.addEventListener('keyup', this.keyUpHandler);
         
-        // Фокус на canvas
         canvas.tabIndex = 0;
         canvas.focus();
         
-        // Создаём UI
         this.createScoreDisplay();
-        
-        // Запуск игры
         this.lastTime = 0;
         this.lastMove = 0;
         this.gameLoop(0);
     }
     
-    createScoreDisplay() {
-        this.scoreDisplay = document.createElement('div');
-        this.scoreDisplay.className = 'score-display';
-        this.scoreDisplay.id = 'game-score';
-        this.updateScoreDisplay();
-        const canvas = document.getElementById('game-canvas');
-        canvas.parentNode.insertBefore(this.scoreDisplay, canvas);
-    }
-    
-    updateScoreDisplay() {
-        this.scoreDisplay.innerHTML = `
-            SCORE: ${this.score} | HIGH: ${this.highScore}
-            ${this.gameOver ? '<div class="winner-text">GAME OVER</div>' : ''}
-            ${this.paused ? '<div class="paused-text">PAUSED</div>' : ''}
-        `;
-    }
-    
     handleKeyDown(e) {
         const key = e.key.toLowerCase();
-        this.keys[key] = true;
         
-        if (key === 'escape' && this.gameOver) {
-            document.querySelector('.close-btn').click();
-        }
-        
-        // Рестарт игры при нажатии R
+        // Рестарт игры
         if (key === 'r' && this.gameOver) {
-            this.resetGame();
+            e.preventDefault();
             this.score = 0;
             this.speed = 100;
+            this.resetGame();
             return;
         }
         
+        // Пауза
         if (key === ' ' && !this.gameOver) {
+            e.preventDefault();
             this.paused = !this.paused;
             this.updateScoreDisplay();
+            return;
         }
         
-        if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown', ' ', 'r'].includes(key)) {
-            e.preventDefault();
+        // Выход
+        if (key === 'escape') {
+            if (this.gameOver) {
+                document.querySelector('.close-btn').click();
+            }
+            return;
         }
-    }
-    
-    handleKeyUp(e) {
-        const key = e.key.toLowerCase();
-        this.keys[key] = false;
+        
+        // Управление направлением
+        if (!this.paused && !this.gameOver) {
+            switch(key) {
+                case 'arrowleft':
+                    if (this.direction !== 'right') this.nextDirection = 'left';
+                    break;
+                case 'arrowright':
+                    if (this.direction !== 'left') this.nextDirection = 'right';
+                    break;
+                case 'arrowup':
+                    if (this.direction !== 'down') this.nextDirection = 'up';
+                    break;
+                case 'arrowdown':
+                    if (this.direction !== 'up') this.nextDirection = 'down';
+                    break;
+            }
+        }
     }
     
     resetGame() {
-        // Змейка
         this.snake = [
             {x: 10, y: 10},
             {x: 9, y: 10},
@@ -93,13 +83,10 @@ export class Snake {
         ];
         this.direction = 'right';
         this.nextDirection = 'right';
-        
-        // Еда
         this.spawnFood();
-        
-        // Игровое состояние
         this.gameOver = false;
         this.paused = false;
+        this.updateScoreDisplay();
     }
     
     spawnFood() {
@@ -122,21 +109,6 @@ export class Snake {
         
         const now = Date.now();
         
-        // Обработка управления
-        if (this.keys['arrowleft'] && this.direction !== 'right') {
-            this.nextDirection = 'left';
-        }
-        if (this.keys['arrowright'] && this.direction !== 'left') {
-            this.nextDirection = 'right';
-        }
-        if (this.keys['arrowup'] && this.direction !== 'down') {
-            this.nextDirection = 'up';
-        }
-        if (this.keys['arrowdown'] && this.direction !== 'up') {
-            this.nextDirection = 'down';
-        }
-        
-        // Движение змейки
         if (now - this.lastMove > this.speed) {
             this.direction = this.nextDirection;
             this.lastMove = now;
@@ -159,23 +131,20 @@ export class Snake {
                 this.snake.some(segment => segment.x === head.x && segment.y === head.y)) {
                 this.gameOver = true;
                 this.highScore = Math.max(this.highScore, this.score);
+                localStorage.setItem('snakeHighScore', this.highScore);
                 this.updateScoreDisplay();
                 return;
             }
             
-            // Добавление новой головы
             this.snake.unshift(head);
             
-            // Проверка поедания еды
             if (head.x === this.food.x && head.y === this.food.y) {
                 this.score += 10;
                 this.spawnFood();
-                // Ускорение каждые 50 очков
                 if (this.score % 50 === 0 && this.speed > 50) {
                     this.speed -= 5;
                 }
             } else {
-                // Удаление хвоста, если не съели еду
                 this.snake.pop();
             }
             
@@ -184,21 +153,18 @@ export class Snake {
     }
     
     draw() {
-        // Очистка экрана
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Рисуем сетку
+        // Сетка
         this.ctx.strokeStyle = 'rgba(0, 100, 0, 0.2)';
         this.ctx.lineWidth = 0.5;
-        
         for (let x = 0; x < this.canvas.width; x += this.gridSize) {
             this.ctx.beginPath();
             this.ctx.moveTo(x, 0);
             this.ctx.lineTo(x, this.canvas.height);
             this.ctx.stroke();
         }
-        
         for (let y = 0; y < this.canvas.height; y += this.gridSize) {
             this.ctx.beginPath();
             this.ctx.moveTo(0, y);
@@ -206,7 +172,7 @@ export class Snake {
             this.ctx.stroke();
         }
         
-        // Рисуем еду
+        // Еда
         this.ctx.fillStyle = '#ff0';
         this.ctx.beginPath();
         this.ctx.arc(
@@ -218,70 +184,71 @@ export class Snake {
         );
         this.ctx.fill();
         
-        // Рисуем змейку
+        // Змейка
         this.snake.forEach((segment, index) => {
             const isHead = index === 0;
-            const size = isHead ? this.gridSize - 2 : this.gridSize - 4;
-            const offset = (this.gridSize - size) / 2;
-            
             this.ctx.fillStyle = isHead ? '#0f0' : '#0a0';
             this.ctx.fillRect(
-                segment.x * this.gridSize + offset,
-                segment.y * this.gridSize + offset,
-                size,
-                size
+                segment.x * this.gridSize + 2,
+                segment.y * this.gridSize + 2,
+                this.gridSize - 4,
+                this.gridSize - 4
             );
             
-            // Глаза у головы
             if (isHead) {
                 this.ctx.fillStyle = '#fff';
                 const eyeSize = this.gridSize / 5;
+                const eyePositions = {
+                    right: [{x: 3/4, y: 1/3}, {x: 3/4, y: 2/3}],
+                    left: [{x: 1/4, y: 1/3}, {x: 1/4, y: 2/3}],
+                    up: [{x: 1/3, y: 1/4}, {x: 2/3, y: 1/4}],
+                    down: [{x: 1/3, y: 3/4}, {x: 2/3, y: 3/4}]
+                };
                 
-                // Левый глаз
-                let eyeX = segment.x * this.gridSize + this.gridSize / 4;
-                let eyeY = segment.y * this.gridSize + this.gridSize / 3;
-                
-                // Правый глаз
-                if (this.direction === 'left' || this.direction === 'right') {
-                    eyeX = segment.x * this.gridSize + (this.direction === 'left' ? 
-                        this.gridSize / 4 : this.gridSize * 3/4 - eyeSize);
-                    eyeY = segment.y * this.gridSize + this.gridSize / 3;
-                } else {
-                    eyeX = segment.x * this.gridSize + this.gridSize / 3;
-                    eyeY = segment.y * this.gridSize + (this.direction === 'up' ? 
-                        this.gridSize / 4 : this.gridSize * 3/4 - eyeSize);
-                }
-                
-                this.ctx.fillRect(eyeX, eyeY, eyeSize, eyeSize);
-                this.ctx.fillRect(
-                    eyeX + (this.direction === 'left' || this.direction === 'right' ? 
-                        this.gridSize / 2 : 0),
-                    eyeY + (this.direction === 'up' || this.direction === 'down' ? 
-                        this.gridSize / 2 : 0),
-                    eyeSize,
-                    eyeSize
-                );
+                eyePositions[this.direction].forEach(pos => {
+                    this.ctx.fillRect(
+                        segment.x * this.gridSize + pos.x * this.gridSize - eyeSize/2,
+                        segment.y * this.gridSize + pos.y * this.gridSize - eyeSize/2,
+                        eyeSize,
+                        eyeSize
+                    );
+                });
             }
         });
         
-        // Экран Game Over
         if (this.gameOver) {
             this.ctx.font = '30px "Press Start 2P"';
             this.ctx.textAlign = 'center';
             this.ctx.fillStyle = '#ffff00';
             this.ctx.fillText('GAME OVER', this.canvas.width / 2, this.canvas.height / 2 - 30);
             this.ctx.font = '16px "Press Start 2P"';
-            this.ctx.fillText('Нажмите ESC для выхода', this.canvas.width / 2, this.canvas.height / 2 + 20);
-            this.ctx.fillText('Нажмите R для рестарта', this.canvas.width / 2, this.canvas.height / 2 + 50);
+            this.ctx.fillText('Нажмите R для рестарта', this.canvas.width / 2, this.canvas.height / 2 + 20);
+            this.ctx.fillText('ESC для выхода', this.canvas.width / 2, this.canvas.height / 2 + 50);
         }
         
-        // Экран Paused
         if (this.paused && !this.gameOver) {
             this.ctx.font = '30px "Press Start 2P"';
             this.ctx.textAlign = 'center';
             this.ctx.fillStyle = '#ffff00';
             this.ctx.fillText('PAUSED', this.canvas.width / 2, this.canvas.height / 2);
         }
+    }
+    
+    createScoreDisplay() {
+        this.scoreDisplay = document.createElement('div');
+        this.scoreDisplay.className = 'score-display';
+        this.scoreDisplay.id = 'game-score';
+        this.updateScoreDisplay();
+        const canvas = document.getElementById('game-canvas');
+        canvas.parentNode.insertBefore(this.scoreDisplay, canvas);
+    }
+    
+    updateScoreDisplay() {
+        this.scoreDisplay.innerHTML = `
+            SCORE: ${this.score} | HIGH: ${this.highScore}
+            ${this.gameOver ? '<div class="winner-text">GAME OVER</div>' : ''}
+            ${this.paused ? '<div class="paused-text">PAUSED</div>' : ''}
+        `;
     }
     
     gameLoop(timestamp) {
@@ -298,8 +265,6 @@ export class Snake {
     stop() {
         this.running = false;
         window.removeEventListener('keydown', this.keyDownHandler);
-        window.removeEventListener('keyup', this.keyUpHandler);
-        
         if (this.scoreDisplay) this.scoreDisplay.remove();
     }
 }
