@@ -1,4 +1,5 @@
 import { Pong } from './pong.js';
+import { SpaceInvaders } from './space-invaders.js';
 
 const modal = document.getElementById('game-modal');
 const canvas = document.getElementById('game-canvas');
@@ -27,4 +28,8 @@ document.querySelector('[data-game="pong"] button').addEventListener('click', ()
 document.querySelector('.close-btn').addEventListener('click', () => {
     modal.style.display = 'none';
     if (currentGame) currentGame.stop();
+});
+
+document.querySelector('[data-game="space-invaders"] button').addEventListener('click', () => {
+    startGame(SpaceInvaders);
 });
