@@ -78,7 +78,6 @@ export class Pong {
     const canvas = document.getElementById('game-canvas');
     canvas.parentNode.insertBefore(this.scoreDisplay, canvas);
 }
-}
     
     updateScoreDisplay() {
         this.scoreDisplay.innerHTML = `
