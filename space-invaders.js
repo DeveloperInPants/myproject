@@ -27,8 +27,10 @@ export class SpaceInvaders {
         this.resetGame();
         
         // Обработчики событий
-        window.addEventListener('keydown', (e) => this.handleKeyDown(e));
-        window.addEventListener('keyup', (e) => this.handleKeyUp(e));
+        this.keyDownHandler = (e) => this.handleKeyDown(e);
+        this.keyUpHandler = (e) => this.handleKeyUp(e);
+        window.addEventListener('keydown', this.keyDownHandler);
+        window.addEventListener('keyup', this.keyUpHandler);
         
         // Фокус на canvas
         canvas.tabIndex = 0;
@@ -97,11 +99,13 @@ export class SpaceInvaders {
         this.invaders = [];
         this.invaderRows = 5;
         this.invaderCols = 11;
-        this.invaderSpeed = 0.5;
+        this.invaderSpeed = 0.5 + (this.level * 0.1);
         this.invaderDirection = 1;
         this.invaderDrop = 20;
         this.lastInvaderMove = 0;
-        this.invaderMoveDelay = 1000 - (this.level * 100); // Уменьшаем задержку с уровнем
+        this.invaderMoveDelay = Math.max(200, 1000 - (this.level * 100));
+        this.lastInvaderShot = 0;
+        this.invaderShotDelay = 1000;
         this.createInvaders();
         
         // Бункеры
@@ -184,14 +188,19 @@ export class SpaceInvaders {
             }
             
             // Проверка попадания в пришельцев
+            let bulletHit = false;
             for (let j = 0; j < this.invaders.length; j++) {
                 const invader = this.invaders[j];
                 if (invader.alive && this.checkCollision(this.playerBullets[i], invader)) {
                     this.score += invader.points;
                     invader.alive = false;
-                    this.playerBullets.splice(i, 1);
+                    bulletHit = true;
                     break;
                 }
+            }
+            if (bulletHit) {
+                this.playerBullets.splice(i, 1);
+                continue;
             }
             
             // Проверка попадания в бункеры
@@ -241,10 +250,13 @@ export class SpaceInvaders {
                 }
             }
             
-            // Выстрелы пришельцев
-            this.invaderShoot();
-            
             this.lastInvaderMove = now;
+        }
+        
+        // Выстрелы пришельцев
+        if (now - this.lastInvaderShot > this.invaderShotDelay && this.gameStarted) {
+            this.invaderShoot();
+            this.lastInvaderShot = now;
         }
         
         // Движение пуль пришельцев
@@ -273,6 +285,7 @@ export class SpaceInvaders {
                     // Кратковременная неуязвимость после потери жизни
                     this.playerX = this.canvas.width / 2 - this.playerWidth / 2;
                     this.invaderBullets = [];
+                    this.playerBullets = [];
                 }
                 break;
             }
@@ -299,18 +312,23 @@ export class SpaceInvaders {
     }
     
     invaderShoot() {
-        // Выбираем случайного живого пришельца для выстрела
+        // Выбираем случайных живых пришельцев для выстрела
         const aliveInvaders = this.invaders.filter(inv => inv.alive);
         if (aliveInvaders.length === 0) return;
         
-        const shooter = aliveInvaders[Math.floor(Math.random() * aliveInvaders.length)];
-        if (Math.random() < 0.1) { // 10% шанс выстрела
-            this.invaderBullets.push({
-                x: shooter.x + shooter.width / 2 - this.bulletWidth / 2,
-                y: shooter.y + shooter.height,
-                width: this.bulletWidth,
-                height: this.bulletHeight
-            });
+        // Количество выстрелов (1-3 в зависимости от уровня)
+        const shots = Math.min(1 + Math.floor(this.level / 3), 3);
+        
+        for (let i = 0; i < shots; i++) {
+            if (Math.random() < 0.5) { // 50% шанс выстрела для каждого выбранного
+                const shooter = aliveInvaders[Math.floor(Math.random() * aliveInvaders.length)];
+                this.invaderBullets.push({
+                    x: shooter.x + shooter.width / 2 - this.bulletWidth / 2,
+                    y: shooter.y + shooter.height,
+                    width: this.bulletWidth,
+                    height: this.bulletHeight
+                });
+            }
         }
     }
     
@@ -391,8 +409,8 @@ export class SpaceInvaders {
     
     stop() {
         this.running = false;
-        window.removeEventListener('keydown', this.handleKeyDown);
-        window.removeEventListener('keyup', this.handleKeyUp);
+        window.removeEventListener('keydown', this.keyDownHandler);
+        window.removeEventListener('keyup', this.keyUpHandler);
         
         if (this.scoreDisplay) this.scoreDisplay.remove();
     }
