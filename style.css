@@ -5,13 +5,37 @@
     --dark-blue: #0f0f1a;
 }
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background-color: var(--dark-blue);
     color: var(--neon-green);
     font-family: 'Courier New', monospace;
 }
 
-/* Стили игрового поля */
+/* Шапка */
+header {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 3px solid var(--neon-green);
+}
+
+.logo {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.tagline {
+    font-style: italic;
+    color: var(--neon-pink);
+}
+
+/* Игровое поле */
 #game-canvas {
     display: block;
     margin: 20px auto;
@@ -32,53 +56,47 @@ body {
 }
 
 .modal-content {
+    position: relative;
     width: 80%;
     max-width: 800px;
     margin: 50px auto;
     padding: 20px;
     background: var(--dark-blue);
-    border: 3px solid var(--neon-pink);
-}
-/* Стили для Pong */
-#game-canvas.pong {
-    width: 800px;
-    height: 500px;
-    background: #000;
-    border: 3px solid #00ff00;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    border: 3px solid var(--neon-green);
 }
 
-.pong-score {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 2rem;
-    color: #00ff00;
-    text-align: center;
-    margin-top: 20px;
-}
-/* Pong specific styles */
-.pong-button {
-    padding: 8px 16px;
-    background: rgba(15, 15, 26, 0.7);
-    color: #00ff00;
-    border: 2px solid #00ff00;
-    font-family: 'Courier New', monospace;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.3s;
-}
-
-.pong-button:hover {
-    background: #00ff00;
-    color: #0f0f1a;
-}
-
-.exit-button {
+/* Кнопка закрытия в стиле ретро */
+.close-btn {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 200;
+    top: -15px;
+    right: -15px;
+    color: var(--neon-green);
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 1000;
+    background: var(--dark-blue);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 3px solid var(--neon-green);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    font-family: 'Press Start 2P', cursive;
+    line-height: 1;
 }
 
+.close-btn:hover {
+    color: var(--dark-blue);
+    background: var(--neon-green);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+}
+
+/* Стили для Pong */
 .mode-selection {
     position: absolute;
     top: 50%;
@@ -91,20 +109,8 @@ body {
     background: rgba(15, 15, 26, 0.9);
     padding: 30px;
     border-radius: 10px;
-    border: 3px solid #00ff00;
+    border: 3px solid var(--neon-green);
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-}
-
-.mode-title {
-    color: #00ff00;
-    font-family: 'Press Start 2P', cursive;
-    text-align: center;
-    margin: 0 0 20px 0;
-}
-
-.mode-button {
-    padding: 15px 25px;
-    text-align: center;
 }
 
 .score-display {
@@ -113,7 +119,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
-    color: #00ff00;
+    color: var(--neon-green);
     font-family: 'Press Start 2P', cursive;
     font-size: 24px;
     background: rgba(15, 15, 26, 0.7);
@@ -121,7 +127,18 @@ body {
     border-radius: 5px;
 }
 
-.winner-text {
-    font-size: 16px;
-    color: #ffff00;
+/* Адаптивность */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 20px auto;
+    }
+    
+    .close-btn {
+        top: -10px;
+        right: -10px;
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+    }
 }

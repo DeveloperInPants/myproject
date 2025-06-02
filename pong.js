@@ -31,23 +31,11 @@ export class Pong {
         canvas.focus();
         
         // Создаём UI
-        this.createExitButton();
         this.createModeSelection();
         
         // Запуск игры
         this.lastTime = 0;
         this.gameLoop(0);
-    }
-    
-    createExitButton() {
-        this.exitBtn = document.createElement('button');
-        this.exitBtn.textContent = 'Выход';
-        this.exitBtn.className = 'pong-button exit-button';
-        this.exitBtn.addEventListener('click', () => {
-            this.stop();
-            document.getElementById('game-modal').style.display = 'none';
-        });
-        document.getElementById('game-modal').appendChild(this.exitBtn);
     }
     
     createModeSelection() {
@@ -99,20 +87,16 @@ export class Pong {
         const key = e.key.toLowerCase();
         this.keys[key] = true;
         
-        // Старт игры при первом нажатии
         if (!this.gameStarted && this.gameMode && !this.winner) {
             this.gameStarted = true;
             this.firstRound = false;
             this.startBallMovement();
         }
         
-        // Выход по ESC при победе
         if (key === 'escape' && this.winner) {
-            this.stop();
-            document.getElementById('game-modal').style.display = 'none';
+            document.querySelector('.close-btn').click();
         }
         
-        // Отмена действий по умолчанию для игровых клавиш
         if (['w', 's', 'arrowup', 'arrowdown'].includes(key)) {
             e.preventDefault();
         }
@@ -172,18 +156,15 @@ export class Pong {
             else if (paddleCenter > targetY + 10) this.player2Y -= aiSpeed;
         }
         
-        // Движение мяча
         if (this.gameStarted) {
             this.ballX += this.ballSpeedX * (deltaTime / 16);
             this.ballY += this.ballSpeedY * (deltaTime / 16);
         }
         
-        // Отскок от стен
         if (this.ballY <= 0 || this.ballY >= this.canvas.height - this.ballSize) {
             this.ballSpeedY = -this.ballSpeedY;
         }
         
-        // Отскок от платформ
         if (this.checkPaddleCollision(this.player1Y, 0)) {
             const hitPos = (this.ballY - (this.player1Y + this.paddleHeight / 2)) / (this.paddleHeight / 2);
             this.ballSpeedX = Math.abs(this.ballSpeedX) * 1.05;
@@ -196,7 +177,6 @@ export class Pong {
             this.ballSpeedY = hitPos * 8;
         }
         
-        // Гол
         if (this.ballX < 0) {
             this.score.player2++;
             if (this.score.player2 >= this.winningScore) this.winner = 'ИГРОК 2';
@@ -220,16 +200,13 @@ export class Pong {
     }
     
     draw() {
-        // Очистка экрана
         this.ctx.fillStyle = '#0f0f1a';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Платформы
         this.ctx.fillStyle = '#00ff00';
         this.ctx.fillRect(0, this.player1Y, this.paddleWidth, this.paddleHeight);
         this.ctx.fillRect(this.canvas.width - this.paddleWidth, this.player2Y, this.paddleWidth, this.paddleHeight);
         
-        // Мяч
         this.ctx.fillStyle = '#ffffff';
         this.ctx.beginPath();
         this.ctx.arc(
@@ -241,7 +218,6 @@ export class Pong {
         );
         this.ctx.fill();
         
-        // Центральная линия
         this.ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
         this.ctx.setLineDash([10, 10]);
         this.ctx.beginPath();
@@ -250,7 +226,6 @@ export class Pong {
         this.ctx.stroke();
         this.ctx.setLineDash([]);
         
-        // Сообщение "Нажмите клавишу"
         if (this.firstRound && !this.gameStarted && this.gameMode && !this.winner) {
             this.ctx.font = '20px "Press Start 2P"';
             this.ctx.textAlign = 'center';
@@ -258,7 +233,6 @@ export class Pong {
             this.ctx.fillText('НАЖМИТЕ ЛЮБУЮ КЛАВИШУ', this.canvas.width / 2, this.canvas.height / 2);
         }
         
-        // Сообщение о победе
         if (this.winner) {
             this.ctx.font = '30px "Press Start 2P"';
             this.ctx.textAlign = 'center';
@@ -285,7 +259,6 @@ export class Pong {
         window.removeEventListener('keydown', this.handleKeyDown);
         window.removeEventListener('keyup', this.handleKeyUp);
         
-        if (this.exitBtn) this.exitBtn.remove();
         if (this.modeContainer) this.modeContainer.remove();
         if (this.scoreDisplay) this.scoreDisplay.remove();
     }
